@@ -1,4 +1,5 @@
-﻿using System;
+﻿// https://bitbucket.org/jdluzen/sha3/src/d1fd55dc225d?at=default
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -12,11 +13,7 @@ namespace SHA3
         {
         }
 
-        protected
-#if !PORTABLE
-        override
-#endif
-        void HashCore(byte[] array, int ibStart, int cbSize)
+        protected override void HashCore(byte[] array, int ibStart, int cbSize)
         {
             base.HashCore(array, ibStart, cbSize);
             if (cbSize == 0)
@@ -47,11 +44,7 @@ namespace SHA3
             }
         }
 
-        protected
-#if !PORTABLE
-        override
-#endif
-        byte[] HashFinal()
+        protected override byte[] HashFinal()
         {
             int sizeInBytes = SizeInBytes;
             byte[] outb = new byte[HashByteLength];
@@ -334,7 +327,6 @@ namespace SHA3
             state[22] = Asi;
             state[23] = Aso;
             state[24] = Asu;
-
         }
     }
 }

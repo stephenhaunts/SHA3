@@ -1,16 +1,13 @@
-﻿using System;
+﻿// https://bitbucket.org/jdluzen/sha3/src/d1fd55dc225d?at=default
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Text;
 
 namespace SHA3
 {
-    public abstract class SHA3 :
-#if PORTABLE
-    IHashAlgorithm
-#else
-    System.Security.Cryptography.HashAlgorithm
-#endif
+    public abstract class SHA3 : HashAlgorithm
     {
         #region Statics
         public static string DefaultHashName = "SHA512";
@@ -50,10 +47,6 @@ namespace SHA3
         protected ulong[] state;
         protected byte[] buffer;
         protected int buffLength;
-#if PORTABLE
-        protected byte[] HashValue;
-        protected int HashSizeValue;
-#endif
         protected int keccakR;
 
         public int KeccakR
@@ -84,11 +77,7 @@ namespace SHA3
             }
         }
 
-        public
-#if !PORTABLE
-        override
-#endif
-        bool CanReuseTransform
+        public override bool CanReuseTransform
         {
             get
             {
@@ -160,11 +149,7 @@ namespace SHA3
             count -= amount;
         }
 
-        public
-#if !PORTABLE
-        override
-#endif
-        byte[] Hash
+        public override byte[] Hash
         {
             get
             {
@@ -172,11 +157,7 @@ namespace SHA3
             }
         }
 
-        public
-#if !PORTABLE
-        override
-#endif
-        int HashSize
+        public override int HashSize
         {
             get
             {
@@ -186,22 +167,14 @@ namespace SHA3
 
         #endregion
 
-        public
-#if !PORTABLE
-        override
-#endif
-        void Initialize()
+        public override void Initialize()
         {
             buffLength = 0;
             state = new ulong[5 * 5];//1600 bits
             HashValue = null;
         }
 
-        protected
-#if !PORTABLE
-        override
-#endif
-        void HashCore(byte[] array, int ibStart, int cbSize)
+        protected override void HashCore(byte[] array, int ibStart, int cbSize)
         {
             if (array == null)
                 throw new ArgumentNullException("array");
@@ -212,10 +185,5 @@ namespace SHA3
             if (ibStart + cbSize > array.Length)
                 throw new ArgumentOutOfRangeException("ibStart or cbSize");
         }
-
-#if PORTABLE
-        public abstract int TransformBlock(byte[] inputBuffer, int inputOffset, int inputCount, byte[] outputBuffer, int outputOffset);
-        public abstract byte[] TransformFinalBlock(byte[] inputBuffer, int inputOffset, int inputCount);
-#endif
     }
 }
